@@ -3,6 +3,7 @@ import json
 import sys
 import ftfy
 import os
+import re
 
 def pathent(csv_path):
     if csv_path[len(csv_path) - 4:len(csv_path)] == '.csv':
@@ -18,6 +19,13 @@ def unocodeftfy(json_path):
             i = i + 1
             for objjson in strjson:
                 text[i][objjson] = ftfy.fix_text(text[i][objjson])
+                j = 0
+                str = ''
+                for charact in text[i][objjson]:
+                    str = str + text[i][objjson][j]
+                    j = j + 1
+                text[i][objjson] = re.sub(r'\s+', ' ', str)
+                print(text[i][objjson])
     openjsonfile(json_path)
 
 def csvent(csv_path, json_path):
