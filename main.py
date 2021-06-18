@@ -5,6 +5,7 @@ import ftfy
 import os
 import re
 import shutil
+import subject_column_identifier
 
 
 def litcatdefender(json_path1):
@@ -46,7 +47,7 @@ def litcatdefender(json_path1):
                     l = l + 1
                 k = k + 1
             if c > l:
-                dictionary1[key] = 'CATEGORICAL'
+                dictionary1[key] = "CATEGORICAL"
             else:
                 dictionary1[key] = 'LITERAL'
             c = 0
@@ -156,10 +157,10 @@ def uno_code_ftfy(json_path):
 
 
 def csvent(csv_path, json_path):
-    if csv_path[len(csv_path) - 4:len(csv_path)] != '.csv' or json_path[len(json_path) - 5:len(json_path)] != '.json':
-        return csv_path, json_path
-    else:
+    if csv_path[len(csv_path) - 4:len(csv_path)] != '.csv' and json_path[len(json_path) - 5:len(json_path)] != '.json':
         return sys.exit()
+    else:
+        return csv_path, json_path
 
 
 def opencsvfile(csv_path):
@@ -177,8 +178,9 @@ def openjsonfile(json_path, rows):
         json.dump(rows, f, indent=4)
 
 
-pathin = input()
-path = [pathin]
+#  pathin = input()
+#   path = [pathin]
+path = ['f:\\test']
 print(path)
 for el in path:
     if os.path.exists(el):
@@ -209,25 +211,41 @@ for el in path:
                         json_path1 = json_path[0:len(json_path) - 4] + '1' + '.json'
                         json_path2 = json_path[0:len(json_path) - 4] + '2' + '.json'
                         json_path3 = json_path[0:len(json_path) - 4] + '3' + '.json'
+                        json_path4 = json_path[0:len(json_path) - 4] + '4' + '.json'
                         create_json(json_path)
                         litcatdefender(json_path1)
+                        with open(json_path3, 'r', encoding='utf-8') as f:
+                            text = json.load(f)
+                            with open(json_path, 'r', encoding='utf-8') as f1:
+                                text1 = json.load(f1)
+                                i = 0
+                                while i < len(text1):
+                                    dictionary2 = subject_column_identifier.define_subject_column(text1[i], text[0])
+                                    i += 1
+                        text = [dictionary2]
+                        openjsonfile(json_path4, text)
                         shutil.copyfile(json_path1, cl + '/' + json_path1)
                         shutil.copyfile(json_path2, cl + '/' + json_path2)
                         shutil.copyfile(json_path3, cl + '/' + json_path3)
+                        shutil.copyfile(json_path4, cl + '/' + json_path4)
                         os.remove(json_path)
                         os.remove(json_path1)
                         os.remove(json_path2)
                         os.remove(json_path3)
+                        os.remove(json_path4)
     else:
         print('Такого пути нет', el)
 
-csv_path = input()
-json_path = input()
+#   csv_path = input()
+#   json_path = input()
+csv_path = 'input.csv'
+json_path = 'output.json'
 csvent(csv_path, json_path)
 
 json_path1 = json_path[0:len(json_path) - 4] + '1' + '.json'
 json_path2 = json_path[0:len(json_path) - 4] + '2' + '.json'
 json_path3 = json_path[0:len(json_path) - 4] + '3' + '.json'
+json_path4 = json_path[0:len(json_path) - 4] + '4' + '.json'
 
 rows = opencsvfile(csv_path)
 if rows == 0:
@@ -237,3 +255,13 @@ else:
     uno_code_ftfy(json_path)
     create_json(json_path)
     litcatdefender(json_path1)
+    with open(json_path3, 'r', encoding='utf-8') as f:
+        text = json.load(f)
+        with open(json_path, 'r', encoding='utf-8') as f1:
+            text1 = json.load(f1)
+            i = 0
+            while i < len(text1):
+                dictionary2 = subject_column_identifier.define_subject_column(text1[i], text[0])
+                i += 1
+    text = [dictionary2]
+    openjsonfile(json_path4, text)

@@ -37,7 +37,7 @@ def get_empty_cell_fraction(source_table, classified_table):
             # Вычисление количества пустых ячеек в столбце
             empty_cell_number = 0
             for row in source_table:
-                for key, mention_entity in row.items():
+                for key, mention_entity in source_table.items():
                     if column_key == key and not mention_entity:
                         empty_cell_number += 1
             # Вычисление доли пустых ячеек в столбце
@@ -62,7 +62,7 @@ def get_unique_content_cell_fraction(source_table, classified_table):
             # Вычисление количества ячеек с уникальным содержимым
             col = collections.Counter()
             for row in source_table:
-                for key, mention_entity in row.items():
+                for key, mention_entity in source_table.items():
                     if column_key == key:
                         col[mention_entity] += 1
             # Вычисление доли ячеек с уникальным содержимым в столбце
@@ -103,7 +103,7 @@ def get_average_word_number(source_table, classified_table):
             # Подсчет количества слов в ячейках
             total_word_number = 0
             for row in source_table:
-                for key, mention_entity in row.items():
+                for key, mention_entity in source_table.items():
                     if column_key == key and mention_entity:
                         total_word_number += len(mention_entity.split())
             # Вычисление среднего количества слов в ячейках столбца

@@ -1,0 +1,17 @@
+[
+    {
+        "album": "NONE",
+        "year": "DATE",
+        "US_peak_chart_post": "SYMBOL"
+    },
+    {
+        "album": "NONE",
+        "year": "DATE",
+        "US_peak_chart_post": "SYMBOL"
+    },
+    {
+        "album": "NONE",
+        "year": "DATE",
+        "US_peak_chart_post": "INTEGER"
+    }
+]
