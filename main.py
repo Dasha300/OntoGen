@@ -265,3 +265,4 @@ else:
                 i += 1
     text = [dictionary2]
     openjsonfile(json_path4, text)
+nachalo = 0
