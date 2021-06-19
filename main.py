@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import subject_column_identifier
+import ontology_creator
 
 
 def litcatdefender(json_path1):
@@ -203,15 +204,21 @@ for el in path:
                     else:
                         openjsonfile(json_path, rows)
                         shutil.copyfile(json_path, cl + '/' + json_path)
+                        oa = cl + '/jsonowl'
+                        if os.path.exists(oa):
+                            print('Такой путь существует: ', cl)
+                        else:
+                            os.mkdir(oa)
                         cl = cl + '/jsondop'
                         if os.path.exists(cl):
                             print('Такой путь существует: ', cl)
                         else:
                             os.mkdir(cl)
-                        json_path1 = json_path[0:len(json_path) - 4] + '1' + '.json'
-                        json_path2 = json_path[0:len(json_path) - 4] + '2' + '.json'
-                        json_path3 = json_path[0:len(json_path) - 4] + '3' + '.json'
-                        json_path4 = json_path[0:len(json_path) - 4] + '4' + '.json'
+                        json_path1 = json_path[0:len(json_path) - 5] + '1' + '.json'
+                        json_path2 = json_path[0:len(json_path) - 5] + '2' + '.json'
+                        json_path3 = json_path[0:len(json_path) - 5] + '3' + '.json'
+                        json_path4 = json_path[0:len(json_path) - 5] + '4' + '.json'
+                        owl_path = json_path[0:len(json_path) - 5] + '.owl'
                         create_json(json_path)
                         litcatdefender(json_path1)
                         with open(json_path3, 'r', encoding='utf-8') as f:
@@ -224,15 +231,21 @@ for el in path:
                                     i += 1
                         text = [dictionary2]
                         openjsonfile(json_path4, text)
+                        dictionary3 = {}
+                        new_string = ontology_creator.create_ontology(json_path, json_path1, json_path4, dictionary3)
+                        with open(owl_path, "w") as my_file:
+                            my_file.write(new_string)
                         shutil.copyfile(json_path1, cl + '/' + json_path1)
                         shutil.copyfile(json_path2, cl + '/' + json_path2)
                         shutil.copyfile(json_path3, cl + '/' + json_path3)
                         shutil.copyfile(json_path4, cl + '/' + json_path4)
+                        shutil.copyfile(owl_path, oa + '/' + owl_path)
                         os.remove(json_path)
                         os.remove(json_path1)
                         os.remove(json_path2)
                         os.remove(json_path3)
                         os.remove(json_path4)
+                        os.remove(owl_path)
     else:
         print('Такого пути нет', el)
 
@@ -242,10 +255,11 @@ csv_path = 'input.csv'
 json_path = 'output.json'
 csvent(csv_path, json_path)
 
-json_path1 = json_path[0:len(json_path) - 4] + '1' + '.json'
-json_path2 = json_path[0:len(json_path) - 4] + '2' + '.json'
-json_path3 = json_path[0:len(json_path) - 4] + '3' + '.json'
-json_path4 = json_path[0:len(json_path) - 4] + '4' + '.json'
+json_path1 = json_path[0:len(json_path) - 5] + '1' + '.json'
+json_path2 = json_path[0:len(json_path) - 5] + '2' + '.json'
+json_path3 = json_path[0:len(json_path) - 5] + '3' + '.json'
+json_path4 = json_path[0:len(json_path) - 5] + '4' + '.json'
+owl_path = json_path[0:len(json_path) - 5] + '.owl'
 
 rows = opencsvfile(csv_path)
 if rows == 0:
@@ -265,3 +279,7 @@ else:
                 i += 1
     text = [dictionary2]
     openjsonfile(json_path4, text)
+    dictionary3 = {}
+    new_string = ontology_creator.create_ontology(json_path, json_path1, json_path4, dictionary3)
+    with open(owl_path, "w") as my_file:
+        my_file.write(new_string)
