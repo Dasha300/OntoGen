@@ -11,6 +11,12 @@ import click
 
 
 def lit_cat_defender(json_path1, json_path2, json_path3):
+    """
+    Определение типов столбцов
+    :param json_path1: название файла, в котором определены литеральные значения в ячейках
+    :param json_path2: название файла, в котором будут определены типы ячеек("CATEGORICAL" или "LITERAL")
+    :param json_path3: название файла, в котором будут определены типы столбцов("CATEGORICAL" или "LITERAL")
+    """
     with open(json_path1, 'r', encoding='utf-8') as f:
         text1 = []
         text = json.load(f)
@@ -59,6 +65,12 @@ def lit_cat_defender(json_path1, json_path2, json_path3):
 
 
 def create_json(json_path, json_path1):
+    """
+    Определение литеральных значений в ячейках
+    :param json_path: название исходного json-файла
+    :param json_path1: название файла, в котором будут определены литеральные значения в ячейках
+    :return:
+    """
     with open(json_path, 'r', encoding='utf-8') as f:
         text = json.load(f)
         i = -1
@@ -137,6 +149,11 @@ def create_json(json_path, json_path1):
 
 
 def path_ent(csv_path):
+    """
+    Проверка, является ли файл .csv файлом
+    :param csv_path: название файла
+    :return: название файла, если это .csv файл, иначе 1
+    """
     if csv_path[len(csv_path) - 4:len(csv_path)] == '.csv':
         return csv_path
     else:
@@ -144,6 +161,10 @@ def path_ent(csv_path):
 
 
 def uno_code_ftfy(json_path):
+    """
+    Исправление битых символов и удаление лишних пробелов
+    :param json_path: название json файла
+    """
     with open(json_path, 'r', encoding='utf-8') as f:
         text = json.load(f)
         new_dictionary = {}
@@ -162,14 +183,12 @@ def uno_code_ftfy(json_path):
     open_json_file(json_path, text1)
 
 
-def csv_ent(csv_path, json_path):
-    if csv_path[len(csv_path) - 4:len(csv_path)] != '.csv' and json_path[len(json_path) - 5:len(json_path)] != '.json':
-        return sys.exit()
-    else:
-        return csv_path, json_path
-
-
 def open_csv_file(csv_path):
+    """
+    Открытие .csv файла
+    :param csv_path: название .csv файла
+    :return: 0, если файл пуст, rows(строка) - содержимое .csv файла
+    """
     with open(csv_path) as f:
         reader = csv.DictReader(f, skipinitialspace=True, delimiter=',')
         rows = list(reader)
@@ -180,6 +199,11 @@ def open_csv_file(csv_path):
 
 
 def open_json_file(json_path, rows):
+    """
+    Запись .json файла
+    :param json_path: название .json файла
+    :param rows: список с содержимым .json файла
+    """
     with open(json_path, 'w') as f:
         json.dump(rows, f, indent=4)
 
@@ -187,6 +211,10 @@ def open_json_file(json_path, rows):
 @click.command()
 @click.option("--name", prompt="Your path name", help="The path to the folder.")
 def folder_owl(name):
+    """
+    Консольное взаимодействие с пользователем
+    :param name: название пути к файлу, введенное пользователем
+    """
     click.echo(f"{name}")
     path_in = name
     path = [path_in]
@@ -227,6 +255,7 @@ def folder_owl(name):
                             json_path3 = json_path[0:len(json_path) - 5] + '3' + '.json'
                             json_path4 = json_path[0:len(json_path) - 5] + '4' + '.json'
                             owl_path = json_path[0:len(json_path) - 5] + '.owl'
+                            uno_code_ftfy(json_path)
                             create_json(json_path, json_path1)
                             lit_cat_defender(json_path1, json_path2, json_path3)
                             with open(json_path3, 'r', encoding='utf-8') as f:
@@ -261,41 +290,49 @@ def folder_owl(name):
     @click.command()
     @click.option("--name1", prompt="Your file name", help="The name of your file.")
     def file_creator(name1):
+        """
+        Консольное взаимодействие с пользователем
+        :param name1: название файла, введенное пользователем
+        """
         click.echo(f"{name1}")
         csv_file = name1
-        #   csv_path = input()
-        #   json_path = input()
-        json_file = csv_file[0:len(csv_file) - 4] + '.json'
-        csv_file, json_file = csv_ent(csv_file, json_file)
-
-        json_file1 = json_file[0:len(json_file) - 5] + '1' + '.json'
-        json_file2 = json_file[0:len(json_file) - 5] + '2' + '.json'
-        json_file3 = json_file[0:len(json_file) - 5] + '3' + '.json'
-        json_file4 = json_file[0:len(json_file) - 5] + '4' + '.json'
-        owl_file = json_file[0:len(json_file) - 5] + '.owl'
-
-        file_rows = open_csv_file(csv_file)
-        if file_rows == 0:
-            sys.exit()
+        if os.path.exists(csv_file):
+            print('Такой файл существует: ', csv_file)
+            if path_ent(csv_file) == 1:
+                sys.exit()
+            else:
+                json_file = csv_file[0:len(csv_file) - 4] + '.json'
+                json_file1 = json_file[0:len(json_file) - 5] + '1' + '.json'
+                json_file2 = json_file[0:len(json_file) - 5] + '2' + '.json'
+                json_file3 = json_file[0:len(json_file) - 5] + '3' + '.json'
+                json_file4 = json_file[0:len(json_file) - 5] + '4' + '.json'
+                owl_file = json_file[0:len(json_file) - 5] + '.owl'
+                file_rows = open_csv_file(csv_file)
+                if file_rows == 0:
+                    sys.exit()
+                else:
+                    open_json_file(json_file, file_rows)
+                    uno_code_ftfy(json_file)
+                    create_json(json_file, json_file1)
+                    lit_cat_defender(json_file1, json_file2, json_file3)
+                    with open(json_file3, 'r', encoding='utf-8') as fj:
+                        file_text = json.load(fj)
+                        with open(json_file, 'r', encoding='utf-8') as fj1:
+                            file_text1 = json.load(fj1)
+                            t = 0
+                            while t < len(file_text1):
+                                file_dictionary = subject_column_identifier.define_subject_column(file_text1[t],
+                                                                                                  file_text[0])
+                                t += 1
+                    file_text = [file_dictionary]
+                    open_json_file(json_file4, file_text)
+                    dictionary3_file = {}
+                    new_file_string = ontology_creator.create_ontology(json_file, json_file1,
+                                                                       json_file4, dictionary3_file)
+                    with open(owl_file, "w") as my_single_file:
+                        my_single_file.write(new_file_string)
         else:
-            open_json_file(json_file, file_rows)
-            uno_code_ftfy(json_file)
-            create_json(json_file, json_file1)
-            lit_cat_defender(json_file1, json_file2, json_file3)
-            with open(json_file3, 'r', encoding='utf-8') as fj:
-                file_text = json.load(fj)
-                with open(json_file, 'r', encoding='utf-8') as fj1:
-                    file_text1 = json.load(fj1)
-                    t = 0
-                    while t < len(file_text1):
-                        file_dictionary = subject_column_identifier.define_subject_column(file_text1[t], file_text[0])
-                        t += 1
-            file_text = [file_dictionary]
-            open_json_file(json_file4, file_text)
-            dictionary3_file = {}
-            new_file_string = ontology_creator.create_ontology(json_file, json_file1, json_file4, dictionary3_file)
-            with open(owl_file, "w") as my_single_file:
-                my_single_file.write(new_file_string)
+            print('Такого файла нет', csv_file)
 
     file_creator()
 
