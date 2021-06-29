@@ -31,7 +31,7 @@ def open_file(json_file):
     return text
 
 
-def class_creator(entity_name, i):
+def create_class(entity_name, i):
     """
     Создание класса
     :param entity_name: название класса
@@ -49,7 +49,7 @@ def class_creator(entity_name, i):
     return ont_class
 
 
-def objectProperty_creator(entity_name, sub_name, j):
+def create_object_property(entity_name, sub_name, j):
     """
     Создание объектного свойства сущности
     :param entity_name: название объектного свойства
@@ -81,20 +81,20 @@ def objectProperty_creator(entity_name, sub_name, j):
     return ont_obj_prop
 
 
-def sub_atr(s_name, subject_value, dictionary3):
+def create_sub_atr(sub_name, subject_value, dictionary3):
     """
     Создание тега с названием индивида
-    :param s_name: название класса, к которому принадлежит индивид
+    :param sub_name: название класса, к которому принадлежит индивид
     :param subject_value: название атрибута тега
     :param dictionary3: словарь, в котором формируется индивид
     :return: словарь с названием индивида
     """
-    s_name = s_name.replace("_", "")
+    sub_name = sub_name.replace("_", "")
     subject_value = subject_value.replace("_", "")
     dictionary5 = {
         "@ns": "rdf",
         "@attrs": {
-            "rdf:resource": '#' + s_name.replace(" ", "")
+            "rdf:resource": '#' + sub_name.replace(" ", "")
         }
     }
     dictionary3.update({"@ns": "owl",
@@ -105,45 +105,45 @@ def sub_atr(s_name, subject_value, dictionary3):
     return dictionary3
 
 
-def c_obj_atr(c_obj_name, c_obj_value, dictionary3):
+def create_categorical_obj_atr(categorical_obj_name, categorical_obj_value, dictionary3):
     """
     Создание словаря с объектными свойствами индивида
-    :param c_obj_name: название объектного свойства
-    :param c_obj_value: значение объектного свойства
+    :param categorical_obj_name: название объектного свойства
+    :param categorical_obj_value: значение объектного свойства
     :param dictionary3: словарь, в котором формируется индивид
     :return: словарь с объектными свойствами индивида
     """
-    c_obj_name = c_obj_name.replace("_", "")
-    c_obj_value = c_obj_value.replace("_", "")
+    categorical_obj_name = categorical_obj_name.replace("_", "")
+    categorical_obj_value = categorical_obj_value.replace("_", "")
     dictionary5 = {
         "@attrs": {
-            "rdf:resource": '#' + c_obj_value.replace(" ", "")
+            "rdf:resource": '#' + categorical_obj_value.replace(" ", "")
         }
     }
-    dictionary3.update({"has" + c_obj_name.replace(" ", ""): dictionary5})
+    dictionary3.update({"has" + categorical_obj_name.replace(" ", ""): dictionary5})
     return dictionary3
 
 
-def l_obj_atr(l_obj_name, l_obj_value, dictionary3):
+def create_literal_obj_atr(literal_obj_name, literal_obj_value, dictionary3):
     """
     Создание словаря с типом данных индивида
-    :param l_obj_name: название типа данных индивида
-    :param l_obj_value: литеральное значение индивида
+    :param literal_obj_name: название типа данных индивида
+    :param literal_obj_value: литеральное значение индивида
     :param dictionary3: словарь, в котором формируется индивид
     :return: словарь с литеральными свойствами индивида
     """
-    l_obj_name = l_obj_name.replace("_", "")
-    l_obj_value = l_obj_value.replace("_", "")
+    literal_obj_name = literal_obj_name.replace("_", "")
+    literal_obj_value = literal_obj_value.replace("_", "")
     dictionary5 = {
         "@attrs": {
-            "rdf:resource": l_obj_value.replace(" ", "")
+            "rdf:resource": literal_obj_value.replace(" ", "")
         }
     }
-    dictionary3.update({"has" + l_obj_name.replace(" ", ""): dictionary5})
+    dictionary3.update({"has" + literal_obj_name.replace(" ", ""): dictionary5})
     return dictionary3
 
 
-def datatypeProperty_creator(obj_json, subj_name, type_name, j):
+def create_datatype_property(obj_json, subj_name, type_name, j):
     """
     Преобразование всех заголовков L-столбцов таблицы в свойства-значения
     :param obj_json: название заголовка L-столбца
@@ -176,7 +176,7 @@ def datatypeProperty_creator(obj_json, subj_name, type_name, j):
     return ont_data_prop
 
 
-def nameIndividualCategorical_creator(obj_json, obj_name, j):
+def create_name_individual_categorical(obj_json, obj_name, j):
     """
     Генерация индивида
     :param obj_json: тип индивида
@@ -187,7 +187,7 @@ def nameIndividualCategorical_creator(obj_json, obj_name, j):
     obj_json = obj_json.replace("_", "")
     obj_name = obj_name.replace("_", "")
     ont_name_individual_categorical = [
-        {"NamedIndividual1" + str(j): {  # The root tag. Will not necessarily be root. (see #customRoot)
+        {"NamedIndividual" + str(j): {  # The root tag. Will not necessarily be root. (see #customRoot)
             "@ns": "owl",
             "@name": "NamedIndividual",
             "@attrs": {
@@ -235,6 +235,12 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
     i = -1
     j = 0
     entity_name = set()
+    subject_name = ""
+    for str_json in text:
+        i = i + 1
+        for obj_json in str_json:
+            if text1[0][obj_json] == "SUBJECT":
+                subject_name = obj_json
     for str_json in text:
         i = i + 1
         for obj_json in str_json:
@@ -245,7 +251,7 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                     continue
                 else:
                     j = j + 1
-                    lst = class_creator(obj_json.title(), j)
+                    lst = create_class(obj_json.title(), j)
                     ont_class.extend(lst)
 
     entity_name = set()
@@ -256,15 +262,13 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
         i = i + 1
         for obj_json in str_json:
             length_set = len(entity_name)
-            if text1[0][obj_json] == "SUBJECT":
-                subject_name = obj_json
             if text1[0][obj_json] == "CATEGORICAL":
                 entity_name.add((obj_json.replace(" ", "")).replace("_", ""))
                 if length_set == len(entity_name):
                     continue
                 else:
                     j = j + 1
-                    lst = objectProperty_creator(obj_json.title(), subject_name.title(), j)
+                    lst = create_object_property(obj_json.title(), subject_name.title(), j)
                     ont_obj_prop.extend(lst)
 
     entity_name = set()
@@ -275,8 +279,6 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
         i = i + 1
         for obj_json in str_json:
             length_set = len(entity_name)
-            if text1[0][obj_json] == "SUBJECT":
-                subject_name = obj_json
             if text1[0][obj_json] == "LITERAL":
                 entity_name.add((obj_json.replace(" ", "")).replace("_", ""))
                 if length_set == len(entity_name):
@@ -287,9 +289,8 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                     for key, value in dict1.items():
                         if type_name == key:
                             type_name = dict1[key]
-                    lst = datatypeProperty_creator(obj_json.title(), subject_name.title(), type_name, j)
+                    lst = create_datatype_property(obj_json.title(), subject_name.title(), type_name, j)
                     ont_data_prop.extend(lst)
-
     i = -1
     entity_name = set()
     k = 1
@@ -316,7 +317,7 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                 else:
                     j = j + 1
                     obj_name = text[i][obj_json]
-                    lst = nameIndividualCategorical_creator(obj_json.title(), obj_name, j)
+                    lst = create_name_individual_categorical(obj_json.title(), obj_name, j)
                     ont_name_individual_categorical.extend(lst)
 
     i = -1
@@ -326,25 +327,24 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
 
     for str_json in text:
         i = i + 1
+        length_set = len(entity_name)
+        entity_name.add((text[i][subject_name].replace(" ", "")).replace("_", ""))
+        if length_set == len(entity_name):
+            continue
+        else:
+            subject_value = text[i][subject_name]
+            dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
         for obj_json in str_json:
-            length_set = len(entity_name)
-            if text1[0][obj_json] == "SUBJECT":
-                entity_name.add((text[i][obj_json].replace(" ", "")).replace("_", ""))
-                if length_set == len(entity_name):
-                    continue
-                else:
-                    subject_name = obj_json
-                    subject_value = text[i][obj_json]
-                    dictionary3 = sub_atr(subject_name.title(), subject_value, dictionary3)
             if text1[0][obj_json] == "CATEGORICAL":
                 c_obj_name = obj_json
                 c_obj_value = text[i][obj_json]
-                dictionary3 = c_obj_atr(c_obj_name.title(), c_obj_value, dictionary3)
+                dictionary3 = create_categorical_obj_atr(c_obj_name.title(), c_obj_value, dictionary3)
             if text1[0][obj_json] == "LITERAL":
                 l_obj_name = obj_json
                 l_obj_value = text[i][obj_json]
-                dictionary3 = l_obj_atr(l_obj_name.title(), l_obj_value, dictionary3)
+                dictionary3 = create_literal_obj_atr(l_obj_name.title(), l_obj_value, dictionary3)
         dictionary2.update({"NamedIndividual" + str(j): dictionary3})
+
         j = j + 1
         dictionary3 = {}
     ont_name_individual_subject = [dictionary2]
