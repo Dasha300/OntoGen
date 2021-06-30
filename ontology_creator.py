@@ -22,9 +22,9 @@ dict1 = {"DATE": "http://www.w3.org/2001/XMLSchema#date",
 
 def open_file(json_file):
     """
-    Открытие .json файла и извлечение содержимого
-    :param json_file: название .json файла
-    :return: список с содержимым .json файла
+        Открытие .json файла и извлечение содержимого
+        :param json_file: название .json файла
+        :return: список с содержимым .json файла
     """
     with open(json_file, 'r', encoding='utf-8') as f:
         text = json.load(f)
@@ -33,10 +33,10 @@ def open_file(json_file):
 
 def create_class(entity_name, i):
     """
-    Создание класса
-    :param entity_name: название класса
-    :param i: порядковый номер класса
-    :return: словарь с классом
+        Создание класса
+        :param entity_name: название класса
+        :param i: порядковый номер класса
+        :return: словарь с классом
     """
     entity_name = entity_name.replace("_", "")
     ont_class = [{"Class" + str(i): {  # The root tag. Will not necessarily be root. (see #customRoot)
@@ -51,11 +51,11 @@ def create_class(entity_name, i):
 
 def create_object_property(entity_name, sub_name, j):
     """
-    Создание объектного свойства сущности
-    :param entity_name: название объектного свойства
-    :param sub_name: Название домена
-    :param j: порядковый номер объекта
-    :return: словарь с объектным свойством сущности
+        Создание объектного свойства сущности
+        :param entity_name: название объектного свойства
+        :param sub_name: Название домена
+        :param j: порядковый номер объекта
+        :return: словарь с объектным свойством сущности
     """
     entity_name = entity_name.replace("_", "")
     sub_name = sub_name.replace("_", "")
@@ -107,11 +107,11 @@ def create_sub_atr(sub_name, subject_value, dictionary3):
 
 def create_categorical_obj_atr(categorical_obj_name, categorical_obj_value, dictionary3):
     """
-    Создание словаря с объектными свойствами индивида
-    :param categorical_obj_name: название объектного свойства
-    :param categorical_obj_value: значение объектного свойства
-    :param dictionary3: словарь, в котором формируется индивид
-    :return: словарь с объектными свойствами индивида
+        Создание словаря с объектными свойствами индивида
+        :param categorical_obj_name: название объектного свойства
+        :param categorical_obj_value: значение объектного свойства
+        :param dictionary3: словарь, в котором формируется индивид
+        :return: словарь с объектными свойствами индивида
     """
     categorical_obj_name = categorical_obj_name.replace("_", "")
     categorical_obj_value = categorical_obj_value.replace("_", "")
@@ -126,11 +126,11 @@ def create_categorical_obj_atr(categorical_obj_name, categorical_obj_value, dict
 
 def create_literal_obj_atr(literal_obj_name, literal_obj_value, dictionary3):
     """
-    Создание словаря с типом данных индивида
-    :param literal_obj_name: название типа данных индивида
-    :param literal_obj_value: литеральное значение индивида
-    :param dictionary3: словарь, в котором формируется индивид
-    :return: словарь с литеральными свойствами индивида
+        Создание словаря с типом данных индивида
+        :param literal_obj_name: название типа данных индивида
+        :param literal_obj_value: литеральное значение индивида
+        :param dictionary3: словарь, в котором формируется индивид
+        :return: словарь с литеральными свойствами индивида
     """
     literal_obj_name = literal_obj_name.replace("_", "")
     literal_obj_value = literal_obj_value.replace("_", "")
@@ -145,12 +145,12 @@ def create_literal_obj_atr(literal_obj_name, literal_obj_value, dictionary3):
 
 def create_datatype_property(obj_json, subj_name, type_name, j):
     """
-    Преобразование всех заголовков L-столбцов таблицы в свойства-значения
-    :param obj_json: название заголовка L-столбца
-    :param subj_name: Название домена
-    :param type_name: название типа данных
-    :param j: порядковый номер объекта
-    :return: словарь с литеральными значениями
+        Преобразование всех заголовков L-столбцов таблицы в свойства-значения
+        :param obj_json: название заголовка L-столбца
+        :param subj_name: Название домена
+        :param type_name: название типа данных
+        :param j: порядковый номер объекта
+        :return: словарь с литеральными значениями
     """
     obj_json = obj_json.replace("_", "")
     subj_name = subj_name.replace("_", "")
@@ -187,7 +187,7 @@ def create_name_individual_categorical(obj_json, obj_name, j):
     obj_json = obj_json.replace("_", "")
     obj_name = obj_name.replace("_", "")
     ont_name_individual_categorical = [
-        {"NamedIndividual" + str(j): {  # The root tag. Will not necessarily be root. (see #customRoot)
+        {"NamedIndividual1" + str(j): {  # The root tag. Will not necessarily be root. (see #customRoot)
             "@ns": "owl",
             "@name": "NamedIndividual",
             "@attrs": {
@@ -253,7 +253,6 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                     j = j + 1
                     lst = create_class(obj_json.title(), j)
                     ont_class.extend(lst)
-
     entity_name = set()
     i = -1
     j = 0
@@ -262,6 +261,8 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
         i = i + 1
         for obj_json in str_json:
             length_set = len(entity_name)
+            if text1[0][obj_json] == "SUBJECT":
+                subject_name = obj_json
             if text1[0][obj_json] == "CATEGORICAL":
                 entity_name.add((obj_json.replace(" ", "")).replace("_", ""))
                 if length_set == len(entity_name):
@@ -270,7 +271,6 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                     j = j + 1
                     lst = create_object_property(obj_json.title(), subject_name.title(), j)
                     ont_obj_prop.extend(lst)
-
     entity_name = set()
     i = -1
     j = 0
@@ -319,12 +319,10 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                     obj_name = text[i][obj_json]
                     lst = create_name_individual_categorical(obj_json.title(), obj_name, j)
                     ont_name_individual_categorical.extend(lst)
-
     i = -1
     entity_name = set()
     j = 0
     dictionary2 = {}
-
     for str_json in text:
         i = i + 1
         length_set = len(entity_name)
@@ -335,16 +333,25 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
             subject_value = text[i][subject_name]
             dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
         for obj_json in str_json:
+            length_set = len(entity_name)
+            if text1[0][obj_json] == "SUBJECT":
+                entity_name.add((text[i][obj_json].replace(" ", "")).replace("_", ""))
+                if length_set == len(entity_name):
+                    continue
+                else:
+                    subject_name = obj_json
+                    subject_value = text[i][obj_json]
+                    dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
             if text1[0][obj_json] == "CATEGORICAL":
-                c_obj_name = obj_json
-                c_obj_value = text[i][obj_json]
-                dictionary3 = create_categorical_obj_atr(c_obj_name.title(), c_obj_value, dictionary3)
+                categorical_obj_name = obj_json
+                categorical_obj_value = text[i][obj_json]
+                dictionary3 = create_categorical_obj_atr(categorical_obj_name.title(),
+                                                         categorical_obj_value, dictionary3)
             if text1[0][obj_json] == "LITERAL":
-                l_obj_name = obj_json
-                l_obj_value = text[i][obj_json]
-                dictionary3 = create_literal_obj_atr(l_obj_name.title(), l_obj_value, dictionary3)
+                literal_obj_name = obj_json
+                literal_obj_value = text[i][obj_json]
+                dictionary3 = create_literal_obj_atr(literal_obj_name.title(), literal_obj_value, dictionary3)
         dictionary2.update({"NamedIndividual" + str(j): dictionary3})
-
         j = j + 1
         dictionary3 = {}
     ont_name_individual_subject = [dictionary2]

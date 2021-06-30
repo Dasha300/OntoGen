@@ -1,6 +1,5 @@
 import csv
 import json
-import sys
 import ftfy
 import os
 import re
@@ -194,7 +193,7 @@ def uno_code_ftfy(json_path):
                 json_str = ftfy.fix_text(str(text[i][obj_json]))
                 json_str = re.sub(r'\s+', ' ', json_str)
                 json_str = re.sub(
-                    r'[\!\?\№\»\^\&\*\[\]\{\}\+\=\(\)\’\/\\\|\_\№\&\<\>\-\$\#\%\`\±\−\,\′\×\;\°\–\'\≥\•\½\:]', '',
+                    r'[\!\?\№\»\^\&\*\[\]\{\}\+\=\(\)\’\|\_\№\&\<\>\-\`\±\,\′\×\;\°\'\≥\•\½]', '',
                     json_str)
                 json_str = re.sub(r'\s+', ' ', json_str)
                 if json_str == "":
@@ -248,7 +247,6 @@ def folder_owl(name):
     click.echo(f"{name}")
     path_in = name
     path = [path_in]
-    # path = ['fj:\\test']
     for el in path:
         if os.path.exists(el):
             print('Такой путь существует: ', el)
@@ -257,17 +255,17 @@ def folder_owl(name):
                     if check_path_ent(awhile) == 1 and awhile[len(awhile) - 5:len(awhile)] != '.json':
                         continue
                     else:
-                        cl = el + '/json'
+                        cl = dirs + '/json'
                         if os.path.exists(cl):
                             print('Такой путь существует: ', cl)
                         else:
                             os.mkdir(cl)
-                        csv_path = path_in + '/' + awhile
+                        csv_path = dirs + '/' + awhile
                         if awhile[len(awhile) - 5:len(awhile)] != '.json':
                             json_path = awhile[0:len(awhile) - 4] + '.json'
                             rows = open_csv_file(csv_path)
                         else:
-                            json_full_path = path_in + '/' + awhile
+                            json_full_path = dirs + '/' + awhile
                             with open(json_full_path, 'r', encoding='utf-8') as fileopen:
                                 rows = json.load(fileopen)
                                 json_path = awhile
@@ -322,59 +320,6 @@ def folder_owl(name):
                             os.remove(owl_path)
         else:
             print('Такого пути нет', el)
-            """
-    def file_creator(name1):
-
-        Консольное взаимодействие с пользователем
-        :param name1: название файла, введенное пользователем
-
-        click.echo(f"{name1}")
-        csv_file = name1
-        if os.path.exists(csv_file):
-            print('Такой файл существует: ', csv_file)
-            if check_path_ent(csv_file) == 1 and csv_file[len(csv_file) - 5:len(csv_file)] != '.json':
-                sys.exit()
-            else:
-                if csv_file[len(csv_file) - 4:len(csv_file)] == '.csv':
-                    json_file = csv_file[0:len(csv_file) - 4] + '.json'
-                    file_rows = open_csv_file(csv_file)
-                else:
-                    json_file = csv_file
-                    with open(json_file, 'r', encoding='utf-8') as fileopen:
-                        file_rows = json.load(fileopen)
-                json_file1 = json_file[0:len(json_file) - 5] + '1' + '.json'
-                json_file2 = json_file[0:len(json_file) - 5] + '2' + '.json'
-                json_file3 = json_file[0:len(json_file) - 5] + '3' + '.json'
-                json_file4 = json_file[0:len(json_file) - 5] + '4' + '.json'
-                owl_file = json_file[0:len(json_file) - 5] + '.owl'
-                if file_rows == 0:
-                    sys.exit()
-                else:
-                    open_json_file(json_file, file_rows)
-                    uno_code_ftfy(json_file)
-                    create_json(json_file, json_file1)
-                    define_literal_categorical(json_file1, json_file2, json_file3)
-                    with open(json_file3, 'r', encoding='utf-8') as fj:
-                        file_text = json.load(fj)
-                        with open(json_file, 'r', encoding='utf-8') as fj1:
-                            file_text1 = json.load(fj1)
-                            t = 0
-                            while t < len(file_text1):
-                                file_dictionary = subject_column_identifier.define_subject_column(file_text1[t],
-                                                                                                  file_text[0])
-                                t += 1
-                    file_text = [file_dictionary]
-                    open_json_file(json_file4, file_text)
-                    dictionary3_file = {}
-                    new_file_string = ontology_creator.create_ontology(json_file, json_file1,
-                                                                       json_file4, dictionary3_file)
-                    with open(owl_file, "w", encoding='utf-8') as my_single_file:
-                        my_single_file.write(new_file_string)
-        else:
-            print('Такого файла нет', csv_file)
-
-    file_creator()
-"""
 
 
 if __name__ == '__main__':
