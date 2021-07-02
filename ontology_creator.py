@@ -323,7 +323,6 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
     entity_name = set()
     j = 0
     dictionary2 = {}
-    k = 0
     for str_json in text:
         i = i + 1
         length_set = len(entity_name)
@@ -338,10 +337,11 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
             if text1[0][obj_json] == "SUBJECT":
                 entity_name.add((text[i][obj_json].replace(" ", "")).replace("_", ""))
                 if length_set == len(entity_name):
-                    k = k + 1
-                subject_name = obj_json
-                subject_value = text[i][obj_json] + str(k)
-                dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
+                    continue
+                else:
+                    subject_name = obj_json
+                    subject_value = text[i][obj_json]
+                    dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
             if text1[0][obj_json] == "CATEGORICAL":
                 categorical_obj_name = obj_json
                 categorical_obj_value = text[i][obj_json]
