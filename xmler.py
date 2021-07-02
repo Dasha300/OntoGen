@@ -6,6 +6,7 @@ version = __version__
 from xml.dom import minidom
 from xml.etree.ElementTree import Element, tostring
 
+import logging
 
 def dict2xml(dict, encoding="utf-8", pretty=False):
     """Converts a python dictionary into a valid XML string

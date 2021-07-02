@@ -4,9 +4,13 @@ import ftfy
 import os
 import re
 import shutil
+import reg_exp_definder
 import subject_column_identifier
 import ontology_creator
 import click
+import unifer_crietor
+import statistics_writer
+import f_measure_identidier
 
 
 def define_literal_categorical(json_path1, json_path2, json_path3):
@@ -79,90 +83,6 @@ def define_literal_categorical(json_path1, json_path2, json_path3):
         open_json_file(json_path3, text1)
 
 
-def create_json(json_path, json_path1):
-    """
-    Определение литеральных значений в ячейках
-    :param json_path: название исходного json-файла
-    :param json_path1: название файла, в котором будут определены литеральные значения в ячейках
-    :return:
-    """
-    with open(json_path, 'r', encoding='utf-8') as f:
-        text = json.load(f)
-        i = -1
-        for str_json in text:
-            i = i + 1
-            for obj_json in str_json:
-                text[i][obj_json] = ftfy.fix_text(text[i][obj_json])
-                text_string = text[i][obj_json]
-                if text[i][obj_json] == 'NONE':
-                    text[i][obj_json] = 'SYMBOL'
-                result = re.search('[A-Za-z0-9А-Яа-я]', text_string)
-                if result:
-                    result = re.search(r'^[-+]?[0-9]+$', text_string)
-                    if result:
-                        text[i][obj_json] = 'INTEGER'
-                    result = re.search('[0-2][0-9][0-9][0-9]', text_string)
-                    if result:
-                        text[i][obj_json] = 'DATE'
-                    result = re.search(
-                        '(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d|(19|20)\d\d-((0[1-9]|1[012])-(0[1-9]|[12]\d)|(0[13-9]|1[012])-30|(0[13578]|1[02])-31)',
-                        text_string)
-                    if result:
-                        text[i][obj_json] = 'DATE'
-                    result = re.search(
-                        '^(0?[1-9]|1[0-2]):[0-5][0-9]$|((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))|^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$|^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$|(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)',
-                        text_string)
-                    if result:
-                        text[i][obj_json] = 'TIME'
-                    result = re.search('^"true|false|True|False|TRUE|FALSE"&', text_string)
-                    if result:
-                        text[i][obj_json] = 'LOGIC'
-                    result = re.search('^\d{6}$', text_string)
-                    if result:
-                        text[i][obj_json] = 'MAIL'
-                    result = re.search('^[-+]?([1-9]\d*|0)\\$|\\£|\\€', text_string)
-                    if result:
-                        text[i][obj_json] = 'CURRENCY'
-                    result = re.search('^\d{5}(?:[-\s]\d{4})?$', text_string)
-                    if result:
-                        text[i][obj_json] = 'MAIL'
-                    result = re.search('^[0-9]{4}-[0-9]{3}[0-9xX]$', text_string)
-                    if result:
-                        text[i][obj_json] = 'ISSN'
-                    result = re.search('^(?:ISBN(?:: ?| ))?((?:97[89])?\d{9}[\dx])+$', text_string)
-                    if result:
-                        text[i][obj_json] = 'ISBN'
-                    result = re.search('((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)', text_string)
-                    if result:
-                        text[i][obj_json] = 'IPv4'
-                    result = re.search('((\\b100)|(\\b[0-9]{1,2}\\.?[0-9]?))(?=%| *percent)', text_string)
-                    if result:
-                        text[i][obj_json] = 'PERCENT'
-                    result = re.search(r'^([456][0-9]{3})-?([0-9]{4})-?([0-9]{4})-?([0-9]{4})$', text_string)
-                    if result:
-                        text[i][obj_json] = 'CARD'
-                    result = re.search(r'#[0-9A-Fa-f]{6}', text_string)
-                    if result:
-                        text[i][obj_json] = 'COLOR'
-                    result = re.search(r'[\w.-]+@[\w.-]+\.?[\w]+?', text_string)
-                    if result:
-                        text[i][obj_json] = 'EMAIL'
-                    result = re.search("[+-]?\d+\.\d+", text_string)
-                    if result:
-                        text[i][obj_json] = 'FLOAT'
-                if (text[i][obj_json] != 'INTEGER' and text[i][obj_json] != 'SYMBOL' and text[i][obj_json] != 'DATE' and
-                        text[i][obj_json] != 'TIME' and text[i][obj_json] != 'LOGIC' and text[i][obj_json] != 'MAIL' and
-                        text[i][obj_json] != 'CURRENCY' and text[i][obj_json] != 'ISSN' and text[i][
-                            obj_json] != 'ISBN' and
-                        text[i][obj_json] != 'IPv4' and text[i][obj_json] != 'IPv6' and text[i][
-                            obj_json] != 'PERCENT' and
-                        text[i][obj_json] != 'CARD' and text[i][obj_json] != 'COLOR' and text[i][
-                            obj_json] != 'EMAIL' and
-                        text[i][obj_json] != 'FLOAT'):
-                    text[i][obj_json] = 'NONE'
-        open_json_file(json_path1, text)
-
-
 def check_path_ent(csv_path):
     """
     Проверка, является ли файл .csv файлом
@@ -193,7 +113,7 @@ def uno_code_ftfy(json_path):
                 json_str = ftfy.fix_text(str(text[i][obj_json]))
                 json_str = re.sub(r'\s+', ' ', json_str)
                 json_str = re.sub(
-                    r'[\!\?\№\»\^\&\*\[\]\{\}\+\=\(\)\’\|\_\№\&\<\>\-\`\±\,\′\×\;\°\'\≥\•\½]', '',
+                    r'[\!\?\№\»\^\&\*\[\]\{\}\+\=\’\|\_\№\&\<\>\-\`\±\,\′\×\;\°\'\≥\•\½]', '',
                     json_str)
                 json_str = re.sub(r'\s+', ' ', json_str)
                 if json_str == "":
@@ -247,18 +167,18 @@ def folder_owl(name):
     click.echo(f"{name}")
     path_in = name
     path = [path_in]
+    # path = ['fj:\\test']
+    precision, recall, f11, precision1, recall1, f111 = 0, 0, 0, 0, 0, 0
+    counter = 0
     for el in path:
         if os.path.exists(el):
-            print('Такой путь существует: ', el)
             for dirs, folder, files in os.walk(el):
                 for awhile in files:
                     if check_path_ent(awhile) == 1 and awhile[len(awhile) - 5:len(awhile)] != '.json':
                         continue
                     else:
                         cl = dirs + '/json'
-                        if os.path.exists(cl):
-                            print('Такой путь существует: ', cl)
-                        else:
+                        if not os.path.exists(cl):
                             os.mkdir(cl)
                         csv_path = dirs + '/' + awhile
                         if awhile[len(awhile) - 5:len(awhile)] != '.json':
@@ -275,14 +195,10 @@ def folder_owl(name):
                             open_json_file(json_path, rows)
                             shutil.copyfile(json_path, cl + '/' + json_path)
                             oa = cl + '/owl'
-                            if os.path.exists(oa):
-                                print('Такой путь существует: ', cl)
-                            else:
+                            if not os.path.exists(oa):
                                 os.mkdir(oa)
                             cl = cl + '/jsondocs'
-                            if os.path.exists(cl):
-                                print('Такой путь существует: ', cl)
-                            else:
+                            if not os.path.exists(cl):
                                 os.mkdir(cl)
                             json_path1 = json_path[0:len(json_path) - 5] + '1' + '.json'
                             json_path2 = json_path[0:len(json_path) - 5] + '2' + '.json'
@@ -290,7 +206,8 @@ def folder_owl(name):
                             json_path4 = json_path[0:len(json_path) - 5] + '4' + '.json'
                             owl_path = json_path[0:len(json_path) - 5] + '.owl'
                             uno_code_ftfy(json_path)
-                            create_json(json_path, json_path1)
+                            json_path1, text = reg_exp_definder.create_json(json_path, json_path1)
+                            open_json_file(json_path1, text)
                             define_literal_categorical(json_path1, json_path2, json_path3)
                             with open(json_path3, 'r', encoding='utf-8') as f:
                                 text = json.load(f)
@@ -307,6 +224,15 @@ def folder_owl(name):
                                                                           dictionary3)
                             with open(owl_path, "w", encoding='utf-8') as my_file:
                                 my_file.write(new_string)
+                            count1, count2, count3, count4, count5, count6 = f_measure_identidier.f_measure(json_path, json_path4, owl_path)
+                            precision += count1
+                            recall += count2
+                            f11 = f11 + count3
+                            precision1 += count4
+                            recall1 += count5
+                            f111 += count6
+                            counter += 1
+                            statistics_writer.write_statistic(owl_path)
                             shutil.copyfile(json_path1, cl + '/' + json_path1)
                             shutil.copyfile(json_path2, cl + '/' + json_path2)
                             shutil.copyfile(json_path3, cl + '/' + json_path3)
@@ -318,6 +244,14 @@ def folder_owl(name):
                             os.remove(json_path3)
                             os.remove(json_path4)
                             os.remove(owl_path)
+            new_file, new_file1 = unifer_crietor.unifier(path_in)
+            statistic = statistics_writer.write_statistic(new_file, precision,
+                                                          recall, f11, precision1, recall1, f111, counter)
+            shutil.copyfile(new_file, path_in + '/json' + '/' + new_file)
+            shutil.copyfile(statistic, path_in + '/json' + '/' + statistic)
+            os.remove(statistic)
+            os.remove(new_file)
+            os.remove(new_file1)
         else:
             print('Такого пути нет', el)
 
