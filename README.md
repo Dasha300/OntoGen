@@ -19,7 +19,4 @@ If python3 is not installed, find out what version of python 3 is installed and 
 ```
 python main.py --name=f:\test
 
->>> Такой путь существует:  f:\test
->>> Такой путь существует:  f:\test/json
->>> Такой путь существует:  f:\test/json/jsondocs
 ```
