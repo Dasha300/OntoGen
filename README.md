@@ -1,4 +1,4 @@
-# [« Home](https://github.com/STI-Team/ontogen) / ontogen
+# [ Home ](https://github.com/STI-Team/ontogen) / ontogen
 OnotoGen: Software system for analyzing and transforming spreadsheets into ontologies and related data sets
 This document describes the command-line interface for the <code>OntoGen(ont)</code> system.
 
