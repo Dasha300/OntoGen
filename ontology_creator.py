@@ -236,11 +236,18 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
     j = 0
     entity_name = set()
     subject_name = ""
+    list1 = []
     for str_json in text:
         i = i + 1
         for obj_json in str_json:
-            if text1[0][obj_json] == "SUBJECT":
-                subject_name = obj_json
+            j = 0
+            while j < len(text1):
+                if text1[j][obj_json] == "SUBJECT":
+                    subject_name = obj_json
+                    list1.append((text[i][obj_json].replace(" ", "")).replace("_", ""))
+                    list1.sort()
+                j += 1
+    i = -1
     for str_json in text:
         i = i + 1
         for obj_json in str_json:
@@ -293,15 +300,14 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                     ont_data_prop.extend(lst)
     i = -1
     entity_name = set()
-    k = 1
     for str_json in text:
         i = i + 1
         for obj_json in str_json:
             length_set = len(entity_name)
             entity_name.add((text[i][obj_json].replace(" ", "")).replace("_", ""))
             if (length_set == len(entity_name)) and (
-                    text1[0][obj_json] == "CATEGORICAL" or text1[0][obj_json] == "SUBJECT"):
-                text[i][obj_json] = text[i][obj_json] + str(k)
+                    text1[0][obj_json] == "CATEGORICAL"):
+                text[i][obj_json] = text[i][obj_json] + '(' + str(1) + ')'
     entity_name = set()
     i = -1
     j = 0
@@ -323,24 +329,29 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
     entity_name = set()
     j = 0
     dictionary2 = {}
+    k = 1
     for str_json in text:
         i = i + 1
         length_set = len(entity_name)
-        entity_name.add((text[i][subject_name].replace(" ", "")).replace("_", ""))
+        entity_name.add((list1[i].replace(" ", "")).replace("_", ""))
         if length_set == len(entity_name):
-            continue
+            list1[i] = list1[i] + str(k)
+            subject_value = list1[i]
+            dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
+            k = k + 1
         else:
-            subject_value = text[i][subject_name]
+            k = 1
+            subject_value = list1[i]
             dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
         for obj_json in str_json:
             length_set = len(entity_name)
             if text1[0][obj_json] == "SUBJECT":
-                entity_name.add((text[i][obj_json].replace(" ", "")).replace("_", ""))
+                entity_name.add((list1[i].replace(" ", "")).replace("_", ""))
                 if length_set == len(entity_name):
                     continue
                 else:
                     subject_name = obj_json
-                    subject_value = text[i][obj_json]
+                    subject_value = list1[i]
                     dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
             if text1[0][obj_json] == "CATEGORICAL":
                 categorical_obj_name = obj_json
