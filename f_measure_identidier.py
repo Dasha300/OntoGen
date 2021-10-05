@@ -98,4 +98,5 @@ def f_measure(json_path, json_path4, owl_path):
     print("Recall: ", recall1)
     print("F1: ", f11)
     print()
+
     return precision, recall, f1, precision1, recall1, f11
