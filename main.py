@@ -168,18 +168,17 @@ def folder_owl(name):
     path_in = name
     path = [path_in]
     # path = ['fj:\\test']
+    precision, recall, f11, precision1, recall1, f111 = 0, 0, 0, 0, 0, 0
+    counter = 0
     for el in path:
         if os.path.exists(el):
-            print('Такой путь существует: ', el)
             for dirs, folder, files in os.walk(el):
                 for awhile in files:
                     if check_path_ent(awhile) == 1 and awhile[len(awhile) - 5:len(awhile)] != '.json':
                         continue
                     else:
                         cl = dirs + '/json'
-                        if os.path.exists(cl):
-                            print('Такой путь существует: ', cl)
-                        else:
+                        if not os.path.exists(cl):
                             os.mkdir(cl)
                         csv_path = dirs + '/' + awhile
                         if awhile[len(awhile) - 5:len(awhile)] != '.json':
@@ -196,14 +195,10 @@ def folder_owl(name):
                             open_json_file(json_path, rows)
                             shutil.copyfile(json_path, cl + '/' + json_path)
                             oa = cl + '/owl'
-                            if os.path.exists(oa):
-                                print('Такой путь существует: ', cl)
-                            else:
+                            if not os.path.exists(oa):
                                 os.mkdir(oa)
                             cl = cl + '/jsondocs'
-                            if os.path.exists(cl):
-                                print('Такой путь существует: ', cl)
-                            else:
+                            if not os.path.exists(cl):
                                 os.mkdir(cl)
                             json_path1 = json_path[0:len(json_path) - 5] + '1' + '.json'
                             json_path2 = json_path[0:len(json_path) - 5] + '2' + '.json'
@@ -229,8 +224,16 @@ def folder_owl(name):
                                                                           dictionary3)
                             with open(owl_path, "w", encoding='utf-8') as my_file:
                                 my_file.write(new_string)
-                            f_measure_identidier.f_measure(json_path, json_path3, json_path4, owl_path)
-                            statistics_writer.write_statistic(owl_path)
+                            count1, count2, count3, count4, count5, count6 = f_measure_identidier.f_measure(json_path, json_path4, owl_path)
+                            precision += count1
+                            recall += count2
+                            f11 = f11 + count3
+                            precision1 += count4
+                            recall1 += count5
+                            f111 += count6
+                            counter += 1
+                            statistics_writer.write_statistic(owl_path, count1,
+                                                              count2, count3, count4, count5, count6)
                             shutil.copyfile(json_path1, cl + '/' + json_path1)
                             shutil.copyfile(json_path2, cl + '/' + json_path2)
                             shutil.copyfile(json_path3, cl + '/' + json_path3)
@@ -243,8 +246,8 @@ def folder_owl(name):
                             os.remove(json_path4)
                             os.remove(owl_path)
             new_file, new_file1 = unifer_crietor.unifier(path_in)
-            print()
-            statistic = statistics_writer.write_statistic(new_file)
+            statistic = statistics_writer.write_statistic(new_file, precision,
+                                                          recall, f11, precision1, recall1, f111, counter)
             shutil.copyfile(new_file, path_in + '/json' + '/' + new_file)
             shutil.copyfile(statistic, path_in + '/json' + '/' + statistic)
             os.remove(statistic)
