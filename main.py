@@ -232,7 +232,8 @@ def folder_owl(name):
                             recall1 += count5
                             f111 += count6
                             counter += 1
-                            statistics_writer.write_statistic(owl_path)
+                            statistics_writer.write_statistic(owl_path, count1,
+                                                              count2, count3, count4, count5, count6)
                             shutil.copyfile(json_path1, cl + '/' + json_path1)
                             shutil.copyfile(json_path2, cl + '/' + json_path2)
                             shutil.copyfile(json_path3, cl + '/' + json_path3)

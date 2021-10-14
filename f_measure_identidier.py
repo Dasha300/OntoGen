@@ -92,7 +92,7 @@ def f_measure(json_path, json_path4, owl_path):
     precision1 = count_individual / count_individual1
     print("Precision: ", precision1)
     count_individual2 = categorical_individual + subject_individual
-    recall1 = count_individual2 / count_individual1
+    recall1 = count_individual1 / count_individual2
     f11 = (2 * precision1 * recall1) / (precision1 + recall1)
 
     print("Recall: ", recall1)
