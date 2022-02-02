@@ -16,7 +16,6 @@ def write_statistic(owl_path, precision, recall, f11, precision1,
             if line.find("<owl:DatatypeProperty") != -1:
                 count_datatype_prop = count_datatype_prop + 1
     with open(text, 'a', encoding='utf-8') as f:
-        print(owl_path)
         print("Number of classes: ", count_class)
         print("Number of object properties: ", count_object_prop)
         print("Number of datatype properties: ", count_datatype_prop)

@@ -54,7 +54,7 @@ def f_measure(json_path, json_path4, owl_path):
     recall = count2 / count1
     f1 = (2 * precision * recall) / (precision + recall)
     print()
-    print(json_path)
+    print(owl_path)
     print()
     print("Precision: ", precision)
     print("Recall: ", recall)

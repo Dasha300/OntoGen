@@ -245,14 +245,13 @@ def folder_owl(name):
                             os.remove(json_path3)
                             os.remove(json_path4)
                             os.remove(owl_path)
-            new_file, new_file1 = unifer_crietor.unifier(path_in)
+            new_file = unifer_crietor.unifier(path_in)
             statistic = statistics_writer.write_statistic(new_file, precision,
                                                           recall, f11, precision1, recall1, f111, counter)
             shutil.copyfile(new_file, path_in + '/json' + '/' + new_file)
             shutil.copyfile(statistic, path_in + '/json' + '/' + statistic)
             os.remove(statistic)
             os.remove(new_file)
-            os.remove(new_file1)
         else:
             print('Такого пути нет', el)
 
