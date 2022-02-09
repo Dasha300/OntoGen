@@ -10,9 +10,9 @@ SUBJECT_COLUMN = "SUBJECT"  # Subject column type
 
 def is_float(string):
     """
-    Определение является ли строка числовым значением.
-    :param string: исходная строка
-    :return: True - если строка является числом, False - в противном случае
+    Determines if a string is a numeric value
+    :param string: source string
+    :return: True if the string is a number, False otherwise
     """
     try:
         float(string.replace(",", "."))
@@ -23,24 +23,24 @@ def is_float(string):
 
 def get_empty_cell_fraction(source_table, classified_table):
     """
-    Получение доли пустых ячеек для категориальных столбцов.
-    :param source_table: исходный словарь (таблица) состоящий из объектов: ключ и упоминание сущности (значение ячейки)
-    :param classified_table: словарь (таблица) с типизированными столбцами
-    :return: словарь c оценкой для каждого столбца
+    Get percentage of empty cells for categorical columns
+    :param source_table: source dictionary (table) consisting of objects: key and entity reference (cell value)
+    :param classified_table: dictionary (table) with typed columns
+    :return: dictionary with score for each column
     """
     result_list = dict()
-    # Вычисление общего количества ячеек в столбце
+    # Calculate the total number of cells in a column
     cell_number = len(source_table)
-    # Обход типов столбцов
+    # Bypass column types
     for column_key, column_type in classified_table.items():
         if column_type == CATEGORICAL_COLUMN:
-            # Вычисление количества пустых ячеек в столбце
+            # Calculate the number of empty cells in a column
             empty_cell_number = 0
             for row in source_table:
                 for key, mention_entity in source_table.items():
                     if column_key == key and not mention_entity:
                         empty_cell_number += 1
-            # Вычисление доли пустых ячеек в столбце
+            # Calculate the proportion of empty cells in a column
             result_list[column_key] = empty_cell_number / cell_number
 
     return result_list
@@ -48,24 +48,24 @@ def get_empty_cell_fraction(source_table, classified_table):
 
 def get_unique_content_cell_fraction(source_table, classified_table):
     """
-    Получение доли ячеек с уникальным содержимым для категориальных столбцов.
-    :param source_table: исходный словарь (таблица) состоящий из объектов: ключ и упоминание сущности (значение ячейки)
-    :param classified_table: словарь (таблица) с типизированными столбцами
-    :return: словарь c оценкой для каждого столбца
+    Get the proportion of cells with unique content for categorical columns.
+    :param source_table: source dictionary (table) consisting of objects: key and entity reference (cell value)
+    :param classified_table: dictionary (table) with typed columns
+    :return: dictionary with score for each column
     """
     result_list = dict()
-    # Вычисление общего количества ячеек в столбце
+    # Calculate the total number of cells in a column
     cell_number = len(source_table)
-    # Обход типов столбцов
+    # Bypass column types
     for column_key, column_type in classified_table.items():
         if column_type == CATEGORICAL_COLUMN:
-            # Вычисление количества ячеек с уникальным содержимым
+            # Calculate the number of cells with unique content
             col = collections.Counter()
             for row in source_table:
                 for key, mention_entity in source_table.items():
                     if column_key == key:
                         col[mention_entity] += 1
-            # Вычисление доли ячеек с уникальным содержимым в столбце
+            # Calculate the proportion of cells with unique content in a column
             result_list[column_key] = len(col) / cell_number
 
     return result_list
@@ -73,9 +73,9 @@ def get_unique_content_cell_fraction(source_table, classified_table):
 
 def get_distance_from_first_ne_column(classified_table):
     """
-    Получение расстояния от первого сущностного столбца для категориальных столбцов.
-    :param classified_table: словарь (таблица) с типизированными столбцами
-    :return: словарь c оценкой для каждого столбца
+    Getting the distance from the first entity column for categorical columns
+    :param classified_table: dictionary (table) with typed columns
+    :return: dictionary with score for each column
     """
     result_list = dict()
     column_number = 0
@@ -89,24 +89,24 @@ def get_distance_from_first_ne_column(classified_table):
 
 def get_average_word_number(source_table, classified_table):
     """
-    Получение среднего количества слов для категориальных столбцов.
-    :param source_table: исходный словарь (таблица) состоящий из объектов: ключ и упоминание сущности (значение ячейки)
-    :param classified_table: словарь (таблица) с типизированными столбцами
-    :return: словарь c оценкой для каждого столбца
+    Getting the average number of words for categorical columns
+    :param source_table: source dictionary (table) consisting of objects: key and entity reference (cell value)
+    :param classified_table: dictionary (table) with typed columns
+    :return: dictionary with score for each column
     """
     result_list = dict()
-    # Вычисление общего количества ячеек в столбце
+    # Calculate the total number of cells in a column
     cell_number = len(source_table)
-    # Обход типов столбцов
+    # Bypass column types
     for column_key, column_type in classified_table.items():
         if column_type == CATEGORICAL_COLUMN:
-            # Подсчет количества слов в ячейках
+            # Count the number of words in cells
             total_word_number = 0
             for row in source_table:
                 for key, mention_entity in source_table.items():
                     if column_key == key and mention_entity:
                         total_word_number += len(mention_entity.split())
-            # Вычисление среднего количества слов в ячейках столбца
+            # Calculate the average number of words in the cells of a column
             result_list[column_key] = total_word_number / cell_number
 
     return result_list
@@ -114,14 +114,14 @@ def get_average_word_number(source_table, classified_table):
 
 def define_subject_column(source_table, classified_table, index=None):
     """
-    Определение сущностного (тематического) столбца на основе эвристических оценок.
-    :param source_table: исходный словарь (таблица) состоящий из объектов: ключ и упоминание сущности (значение ячейки)
-    :param classified_table: словарь (таблица) с типизированными столбцами
-    :param index: явное указание на номер сущностного (тематического) столбца
-    :return: словарь (таблица) с отмеченным сущностным (тематическим) столбцом
+    Definition of an essential (thematic) column based on heuristic estimates
+    :param source_table: source dictionary (table) consisting of objects: key and entity reference (cell value)
+    :param classified_table: dictionary (table) with typed columns
+    :param index: explicit indication of the number of the entity (thematic) column
+    :return: dictionary (table) with marked entity (thematic) column
     """
     result_list = dict()
-    # Если явно указан номер столбца, то данный столбец назначается сущностным (тематическим)
+    # If the column number is explicitly specified, then this column is assigned to the essential (thematic)
     if is_float(str(index)) and 0 <= index <= len(classified_table):
         i = 0
         for key, type_column in classified_table.items():
@@ -132,22 +132,22 @@ def define_subject_column(source_table, classified_table, index=None):
             i += 1
     else:
         sub_col = dict()
-        # Получение доли пустых ячеек
+        # Get the proportion of empty cells
         empty_cell_fraction = get_empty_cell_fraction(source_table, classified_table)
-        # Получение доли ячеек с уникальным содержимым
+        # Get the proportion of cells with unique content
         unique_content_cell_fraction = get_unique_content_cell_fraction(source_table, classified_table)
-        # Получение расстояния от первого сущностного столбца
+        # Get the distance from the first entity column
         distance_from_first_ne_column = get_distance_from_first_ne_column(classified_table)
-        # Получение среднего количества слов
+        # Get the average number of words
         average_word_number = get_average_word_number(source_table, classified_table)
-        # Агрегация оценки
+        # Estimation aggregation
         for key, type_column in classified_table.items():
             if type_column == CATEGORICAL_COLUMN:
                 sub_col[key] = (2 * unique_content_cell_fraction[key] + average_word_number[key] -
                                 empty_cell_fraction[key]) / sqrt(distance_from_first_ne_column[key] + 1)
-        # Определение ключа столбца с максимальной оценкой
+        # Determining the column key with the highest score
         subject_key = max(sub_col.items(), key=operator.itemgetter(1))[0]
-        # Формирование словаря с определенным сущностным (тематическим) столбцом
+        # Formation of a dictionary with a certain essential (thematic) column
         for key, type_column in classified_table.items():
             if key == subject_key:
                 result_list[key] = SUBJECT_COLUMN

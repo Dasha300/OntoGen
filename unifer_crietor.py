@@ -1,13 +1,14 @@
 import fileinput
 import glob
+import json
 import os
 
 
 def unifier(path):
     """
-    Создание единой онтологии на основе созданных онтологий из каждого файла.
-    :param path: Путь к файлам, где хранятся онтологии
-    :return: Файл единой онтологии
+    Creation of a single ontology based on the created ontologies from each file
+    :param path: Path to files where ontologies are stored
+    :return: Unified ontology file
     """
     list_files = []
     for dirs, folder, files in os.walk(path):
@@ -22,6 +23,8 @@ def unifier(path):
     flag_individual = 0
     object_dictionary = dict()
     datatype_dictionary = dict()
+    text_object = ""
+    text_datatype = ""
     if list_files:
         with fileinput.FileInput(files=list_files, openhook=fileinput.hook_encoded("utf-8")) as fr:
             for line in fr:
@@ -33,24 +36,26 @@ def unifier(path):
                     flag_object = 1
                     object_dictionary.setdefault(line, [])
                 if flag_object == 1:
-                    if line.find("<owl:ObjectProperty") == -1:
-                        object_dictionary[key].append(line)
+                    if line.find("<owl:ObjectProperty") == -1 and line.find("</owl:ObjectProperty") == -1:
+                        text_object = text_object + line
                 if line.find("</owl:ObjectProperty") != -1:
-                    object_dictionary[key].pop()
+                    object_dictionary[key].append(text_object)
                     object_dictionary[key] = list(set(object_dictionary[key]))
                     flag_object = 0
+                    text_object = ""
 
                 if line.find("<owl:DatatypeProperty") != -1:
                     key = line
                     flag_datatype = 1
                     datatype_dictionary.setdefault(line, [])
                 if flag_datatype == 1:
-                    if line.find("<owl:DatatypeProperty") == -1:
-                        datatype_dictionary[key].append(line)
+                    if line.find("<owl:DatatypeProperty") == -1 and line.find("</owl:DatatypeProperty") == -1:
+                        text_datatype = text_datatype + line
                 if line.find("</owl:DatatypeProperty") != -1:
-                    datatype_dictionary[key].pop()
+                    datatype_dictionary[key].append(text_datatype)
                     datatype_dictionary[key] = list(set(datatype_dictionary[key]))
                     flag_datatype = 0
+                    text_datatype = ""
 
                 if line.find("<owl:NamedIndividual") != -1:
                     flag_individual = 1
@@ -73,15 +78,39 @@ def unifier(path):
         for element in class_set:
             fw.write(element)
         for key, elements in object_dictionary.items():
-            fw.write(key)
-            object_dictionary[key].append("\t</owl:ObjectProperty>\n")
-            for element in elements:
-                fw.write(element)
+            count = 0
+            if len(object_dictionary[key]) > 1:
+                for element in elements:
+                    if count == 0:
+                        fw.write(key)
+                        fw.write(element)
+                        fw.write("\t</owl:ObjectProperty>\n")
+                    else:
+                        fw.write(key[0:-3] + str(count) + key[len(key)-3:len(key)-1] + "\n")
+                        fw.write(element)
+                        fw.write("\t</owl:ObjectProperty>\n")
+                    count += 1
+            else:
+                fw.write(key)
+                fw.write(object_dictionary[key][0])
+                fw.write("\t</owl:ObjectProperty>\n")
         for key, elements in datatype_dictionary.items():
-            fw.write(key)
-            datatype_dictionary[key].append("\t</owl:DatatypeProperty>\n")
-            for element in elements:
-                fw.write(element)
+            count = 0
+            if len(datatype_dictionary[key]) > 1:
+                for element in elements:
+                    if count == 0:
+                        fw.write(key)
+                        fw.write(element)
+                        fw.write("\t</owl:DatatypeProperty>\n")
+                    else:
+                        fw.write(key[0:-3] + str(count) + key[len(key) - 3:len(key) - 1] + "\n")
+                        fw.write(element)
+                        fw.write("\t</owl:DatatypeProperty>\n")
+                    count += 1
+            else:
+                fw.write(key)
+                fw.write(datatype_dictionary[key][0])
+                fw.write("\t</owl:DatatypeProperty>\n")
         for key, elements in named_individual_dictionary.items():
             fw.write(key)
             named_individual_dictionary[key].append("\t</owl:NamedIndividual>\n")

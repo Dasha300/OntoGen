@@ -22,9 +22,9 @@ dict1 = {"DATE": "http://www.w3.org/2001/XMLSchema#date",
 
 def open_file(json_file):
     """
-        Открытие .json файла и извлечение содержимого
-        :param json_file: название .json файла
-        :return: список с содержимым .json файла
+        Opening .json file and extracting content
+        :param json_file: .json file name
+        :return: list with .json file content
     """
     with open(json_file, 'r', encoding='utf-8') as f:
         text = json.load(f)
@@ -33,10 +33,10 @@ def open_file(json_file):
 
 def create_class(entity_name, i):
     """
-        Создание класса
-        :param entity_name: название класса
-        :param i: порядковый номер класса
-        :return: словарь с классом
+        Create a class
+        :param entity_name: class name
+        :param i: class number
+        :return: dictionary with class
     """
     entity_name = entity_name.replace("_", "")
     ont_class = [{"Class" + str(i): {  # The root tag. Will not necessarily be root. (see #customRoot)
@@ -51,11 +51,11 @@ def create_class(entity_name, i):
 
 def create_object_property(entity_name, sub_name, j):
     """
-        Создание объектного свойства сущности
-        :param entity_name: название объектного свойства
-        :param sub_name: Название домена
-        :param j: порядковый номер объекта
-        :return: словарь с объектным свойством сущности
+        Creating an Entity Object Property
+        :param entity_name: object property name
+        :param sub_name: domain name
+        :param j: serial number of the object
+        :return: dictionary with entity object property
     """
     entity_name = entity_name.replace("_", "")
     sub_name = sub_name.replace("_", "")
@@ -83,11 +83,11 @@ def create_object_property(entity_name, sub_name, j):
 
 def create_sub_atr(sub_name, subject_value, dictionary3):
     """
-    Создание тега с названием индивида
-    :param sub_name: название класса, к которому принадлежит индивид
-    :param subject_value: название атрибута тега
-    :param dictionary3: словарь, в котором формируется индивид
-    :return: словарь с названием индивида
+    Create a tag with the name of an individual
+    :param sub_name: the name of the class to which the individual belongs
+    :param subject_value: tag attribute name
+    :param dictionary3: vocabulary in which the individual is formed
+    :return: dictionary with the name of the individual
     """
     sub_name = sub_name.replace("_", "")
     subject_value = subject_value.replace("_", "")
@@ -107,11 +107,11 @@ def create_sub_atr(sub_name, subject_value, dictionary3):
 
 def create_categorical_obj_atr(categorical_obj_name, categorical_obj_value, dictionary3):
     """
-        Создание словаря с объектными свойствами индивида
-        :param categorical_obj_name: название объектного свойства
-        :param categorical_obj_value: значение объектного свойства
-        :param dictionary3: словарь, в котором формируется индивид
-        :return: словарь с объектными свойствами индивида
+        Creating a Dictionary with the Object Properties of an Individual
+        :param categorical_obj_name: object property name
+        :param categorical_obj_value: object property value
+        :param dictionary3: vocabulary in which the individual is formed
+        :return: dictionary with object properties of an individual
     """
     categorical_obj_name = categorical_obj_name.replace("_", "")
     categorical_obj_value = categorical_obj_value.replace("_", "")
@@ -126,11 +126,11 @@ def create_categorical_obj_atr(categorical_obj_name, categorical_obj_value, dict
 
 def create_literal_obj_atr(literal_obj_name, literal_obj_value, dictionary3):
     """
-        Создание словаря с типом данных индивида
-        :param literal_obj_name: название типа данных индивида
-        :param literal_obj_value: литеральное значение индивида
-        :param dictionary3: словарь, в котором формируется индивид
-        :return: словарь с литеральными свойствами индивида
+        Creating a Dictionary with an Individual Data Type
+        :param literal_obj_name: the name of the data type of the individual
+        :param literal_obj_value: literal value of an individual
+        :param dictionary3: vocabulary in which the individual is formed
+        :return: dictionary with literal properties of an individual
     """
     literal_obj_name = literal_obj_name.replace("_", "")
     literal_obj_value = literal_obj_value.replace("_", "")
@@ -145,12 +145,12 @@ def create_literal_obj_atr(literal_obj_name, literal_obj_value, dictionary3):
 
 def create_datatype_property(obj_json, subj_name, type_name, j):
     """
-        Преобразование всех заголовков L-столбцов таблицы в свойства-значения
-        :param obj_json: название заголовка L-столбца
-        :param subj_name: Название домена
-        :param type_name: название типа данных
-        :param j: порядковый номер объекта
-        :return: словарь с литеральными значениями
+        Converting all L-column headers of a table to value properties
+        :param obj_json: L-column header name
+        :param subj_name: domain name
+        :param type_name: data type name
+        :param j: serial number of the object
+        :return: dictionary with literal values
     """
     obj_json = obj_json.replace("_", "")
     subj_name = subj_name.replace("_", "")
@@ -178,11 +178,11 @@ def create_datatype_property(obj_json, subj_name, type_name, j):
 
 def create_name_individual_categorical(obj_json, obj_name, j):
     """
-    Генерация индивида
-    :param obj_json: тип индивида
-    :param obj_name: название индивида
-    :param j: порядковый номер индивида
-    :return: словарь с индивидом
+    Generation of the individual
+    :param obj_json: the type of the individual
+    :param obj_name: name of the individual
+    :param j: index number of the individual
+    :return: dictionary with individual
     """
     obj_json = obj_json.replace("_", "")
     obj_name = obj_name.replace("_", "")
@@ -205,12 +205,12 @@ def create_name_individual_categorical(obj_json, obj_name, j):
 
 def create_ontology(json_path, json_path1, json_path4, dictionary3):
     """
-    Создание онтологии
-    :param json_path: название исходного json-файла
-    :param json_path1: название файла, в котором определены литеральные значения в ячейках
-    :param json_path4: название файла с оценкой для каждого столбца
-    :param dictionary3: словарь, в коором будет формироваться индивид
-    :return:
+    Creation of an ontology
+    :param json_path: name of source json file
+    :param json_path1: name of the file that defines the literal values in the cells
+    :param json_path4: name of file with score for each column
+    :param dictionary3: dictionary in which the individual will be formed
+    :return: line with ontology
     """
     json_file = json_path
     ont_namespace = {"@ns": "rdf",  # The namespace for the RootTag. The RootTag will appear as <rdf:RootTag ...>
@@ -340,7 +340,7 @@ def create_ontology(json_path, json_path1, json_path4, dictionary3):
                 if length_set == len(entity_name):
                     k = k + 1
                 subject_name = obj_json
-                subject_value = text[i][obj_json] + str(k)
+                subject_value = text[i][obj_json]
                 dictionary3 = create_sub_atr(subject_name.title(), subject_value, dictionary3)
             if text1[0][obj_json] == "CATEGORICAL":
                 categorical_obj_name = obj_json

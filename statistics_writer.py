@@ -1,5 +1,17 @@
 def write_statistic(owl_path, precision, recall, f11, precision1,
-                    recall1, f111, counter = None):
+                    recall1, f111, counter=None):
+    """
+    Compiling statistics
+        :param owl_path: owl ontology
+        :param precision: precision of schema
+        :param recall: recall of schema
+        :param f11: f1 - measure of schema
+        :param precision1: precision of named individuals
+        :param recall1: recall of named individuals
+        :param f111: f1 - measure of named individuals
+        :param counter: number of rating files
+        :return: string with total statistic
+    """
     text = "statistic.txt"
     with open(owl_path, 'r', encoding='utf-8') as f:
         count_individual = 0
@@ -26,7 +38,7 @@ def write_statistic(owl_path, precision, recall, f11, precision1,
         f.write("Number of object properties: " + str(count_object_prop) + "\n")
         f.write("Number of datatype properties: " + str(count_datatype_prop) + "\n")
         f.write("Number of Named individuals: " + str(count_individual) + "\n" + "\n")
-        if owl_path == "new_file1.owl":
+        if owl_path == "TotalOntology.owl":
             print()
             print("Total:")
             print("Precision ", precision/counter)

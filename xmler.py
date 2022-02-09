@@ -8,18 +8,16 @@ from xml.etree.ElementTree import Element, tostring
 
 import logging
 
+
 def dict2xml(dict, encoding="utf-8", pretty=False):
     """Converts a python dictionary into a valid XML string
-
     Args:
         - encoding specifies the encoding to be included in the encoding
           segment. If set to False no encoding segment will be displayed.
         - customRoot defines the tag to wrap the returned output. Can be
           a string, dictionary, or False if no custom root is to be used.
-
     Returns:
         A XML formatted string representing the dictionary.
-
     Examples:
         ```
         dic = {
@@ -51,11 +49,9 @@ def dict2xml(dict, encoding="utf-8", pretty=False):
                 }
             }
         }
-
         xml = xml2dict(dict, customRoot=False)
         print(xml)
         ```
-
         output:
         ```
         <?xml version="1.0" encoding="UTF-8"?>
@@ -80,7 +76,6 @@ def dict2xml(dict, encoding="utf-8", pretty=False):
 
 
 def parse(dict, parent={}, pretty=False):
-
     for key, value in dict.items():
 
         if '@ns' in value:

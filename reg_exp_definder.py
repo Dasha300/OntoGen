@@ -5,10 +5,10 @@ import ftfy
 
 def create_json(json_path, json_path1):
     """
-    Определение литеральных значений в ячейках
-    :param json_path: название исходного json-файла
-    :param json_path1: название файла, в котором будут определены литеральные значения в ячейках
-    :return:
+    Defining Literal Values in Cells
+    :param json_path: name of source json file
+    :param json_path1: name of the file where the literal values in the cells will be defined
+    :return: file where literal values in cells will be defined, dictionary with defined values
     """
     with open(json_path, 'r', encoding='utf-8') as f:
         text = json.load(f)
