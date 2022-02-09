@@ -1,4 +1,4 @@
-from xmler import dict2xml
+from ontogen.xmler import dict2xml
 import json
 
 dict1 = {"DATE": "http://www.w3.org/2001/XMLSchema#date",

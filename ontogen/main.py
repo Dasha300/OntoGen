@@ -4,13 +4,9 @@ import ftfy
 import os
 import re
 import shutil
-import reg_exp_definder
-import subject_column_identifier
-import ontology_creator
 import click
-import unifer_crietor
-import statistics_writer
-import f_measure_identidier
+from ontogen import statistics_writer, f_measure_identidier, unifer_creator, reg_exp_definder, ontology_creator, \
+    subject_column_identifier
 from datetime import datetime
 
 
@@ -251,7 +247,7 @@ def folder_owl(name):
                                 os.remove(json_path3)
                                 os.remove(json_path4)
                                 os.remove(owl_path)
-                new_file = unifer_crietor.unifier(path_in)
+                new_file = unifer_creator.unifier(path_in)
                 statistic = statistics_writer.write_statistic(new_file, precision,
                                                               recall, f11, precision1, recall1, f111, counter)
                 shutil.copyfile(new_file, path_in + '/json' + '/' + new_file)
