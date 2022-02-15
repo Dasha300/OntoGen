@@ -8,6 +8,7 @@ import click
 from ontogen import statistics_writer, f_measure_identidier, unifer_creator, reg_exp_definder, ontology_creator, \
     subject_column_identifier
 from datetime import datetime
+from pathlib import Path
 
 
 def define_literal_categorical(json_path1, json_path2, json_path3):
@@ -172,14 +173,18 @@ def folder_owl(name):
     for el in path:
         if os.path.exists(el):
             if os.listdir(el):
+
                 for dirs, folder, files in os.walk(el):
                     for awhile in files:
                         if check_path_ent(awhile) == 1 and awhile[len(awhile) - 5:len(awhile)] != '.json':
                             continue
                         else:
-                            cl = dirs + '/json'
+                            cl = str(Path(__file__).parent.parent) + '/results'
                             if not os.path.exists(cl):
                                 os.mkdir(cl)
+                                results = str(Path(__file__).parent.parent) + '/results' + '/evaluation'
+                                if not os.path.exists(results):
+                                    os.mkdir(results)
                             csv_path = dirs + '/' + awhile
                             if awhile[len(awhile) - 5:len(awhile)] != '.json':
                                 json_path = awhile[0:len(awhile) - 4] + '.json'
@@ -193,67 +198,81 @@ def folder_owl(name):
                                 continue
                             else:
                                 open_json_file(json_path, rows)
-                                shutil.copyfile(json_path, cl + '/' + json_path)
-                                oa = cl + '/owl'
-                                if not os.path.exists(oa):
-                                    os.mkdir(oa)
-                                cl = cl + '/jsondocs'
-                                if not os.path.exists(cl):
-                                    os.mkdir(cl)
-                                json_path1 = json_path[0:len(json_path) - 5] + '1' + '.json'
-                                json_path2 = json_path[0:len(json_path) - 5] + '2' + '.json'
-                                json_path3 = json_path[0:len(json_path) - 5] + '3' + '.json'
-                                json_path4 = json_path[0:len(json_path) - 5] + '4' + '.json'
-                                owl_path = json_path[0:len(json_path) - 5] + '.owl'
-                                uno_code_ftfy(json_path)
-                                json_path1, text = reg_exp_definder.create_json(json_path, json_path1)
-                                open_json_file(json_path1, text)
-                                define_literal_categorical(json_path1, json_path2, json_path3)
-                                with open(json_path3, 'r', encoding='utf-8') as f:
-                                    text = json.load(f)
-                                    with open(json_path, 'r', encoding='utf-8') as f1:
-                                        text1 = json.load(f1)
-                                        i = 0
-                                        while i < len(text1):
-                                            dictionary2 = subject_column_identifier.define_subject_column(text1[i],
-                                                                                                          text[0])
-                                            i += 1
-                                text = [dictionary2]
-                                open_json_file(json_path4, text)
-                                dictionary3 = {}
-                                new_string = ontology_creator.create_ontology(json_path, json_path1, json_path4,
-                                                                              dictionary3)
-                                with open(owl_path, "w", encoding='utf-8') as my_file:
-                                    my_file.write(new_string)
-                                count1, count2, count3, count4, count5, count6 = \
-                                    f_measure_identidier.f_measure(json_path, json_path3, json_path4, owl_path)
-                                precision += count1
-                                recall += count2
-                                f11 = f11 + count3
-                                precision1 += count4
-                                recall1 += count5
-                                f111 += count6
-                                counter += 1
-                                statistics_writer.write_statistic(owl_path, count1,
-                                                                  count2, count3, count4, count5, count6)
-                                shutil.copyfile(json_path1, cl + '/' + json_path1)
-                                shutil.copyfile(json_path2, cl + '/' + json_path2)
-                                shutil.copyfile(json_path3, cl + '/' + json_path3)
-                                shutil.copyfile(json_path4, cl + '/' + json_path4)
-                                shutil.copyfile(owl_path, oa + '/' + owl_path)
-                                os.remove(json_path)
-                                os.remove(json_path1)
-                                os.remove(json_path2)
-                                os.remove(json_path3)
-                                os.remove(json_path4)
-                                os.remove(owl_path)
-                new_file = unifer_creator.unifier(path_in)
-                statistic = statistics_writer.write_statistic(new_file, precision,
-                                                              recall, f11, precision1, recall1, f111, counter)
-                shutil.copyfile(new_file, path_in + '/json' + '/' + new_file)
-                shutil.copyfile(statistic, path_in + '/json' + '/' + statistic)
-                os.remove(statistic)
-                os.remove(new_file)
+                                if rows:
+                                    cl = cl + '/jsondocs'
+                                    if not os.path.exists(cl):
+                                        os.mkdir(cl)
+                                    json_path1 = json_path[0:len(json_path) - 5] + '1' + '.json'
+                                    cf = cl + '/' + json_path1[:-6]
+                                    if not os.path.exists(cf):
+                                        os.mkdir(cf)
+                                    oa = cf + '/owl'
+                                    if not os.path.exists(oa):
+                                        os.mkdir(oa)
+                                    shutil.copyfile(json_path, cf + '/' + json_path)
+                                    json_path2 = json_path[0:len(json_path) - 5] + '2' + '.json'
+                                    json_path3 = json_path[0:len(json_path) - 5] + '3' + '.json'
+                                    json_path4 = json_path[0:len(json_path) - 5] + '4' + '.json'
+                                    owl_path = json_path[0:len(json_path) - 5] + '.owl'
+                                    statistic_name = owl_path[:-4] + '.txt'
+                                    uno_code_ftfy(json_path)
+                                    json_path1, text = reg_exp_definder.create_json(json_path, json_path1)
+                                    open_json_file(json_path1, text)
+                                    define_literal_categorical(json_path1, json_path2, json_path3)
+                                    with open(json_path3, 'r', encoding='utf-8') as f:
+                                        text = json.load(f)
+                                        with open(json_path, 'r', encoding='utf-8') as f1:
+                                            text1 = json.load(f1)
+                                            i = 0
+                                            while i < len(text1):
+                                                dictionary2 = subject_column_identifier.define_subject_column(text1[i],
+                                                                                                              text[0])
+                                                i += 1
+                                    text = [dictionary2]
+                                    open_json_file(json_path4, text)
+                                    dictionary3 = {}
+                                    new_string = ontology_creator.create_ontology(json_path, json_path1, json_path4,
+                                                                                  dictionary3)
+                                    with open(owl_path, "w", encoding='utf-8') as my_file:
+                                        my_file.write(new_string)
+                                    count1, count2, count3, count4, count5, count6 = \
+                                        f_measure_identidier.f_measure(json_path, json_path3, json_path4, owl_path)
+                                    precision += count1
+                                    recall += count2
+                                    f11 = f11 + count3
+                                    precision1 += count4
+                                    recall1 += count5
+                                    f111 += count6
+                                    counter += 1
+                                    statistics_writer.write_statistic(owl_path, count1,
+                                                                      count2, count3, count4, count5,
+                                                                      count6, statistic_name)
+                                    shutil.copyfile(json_path1, cf + '/' + json_path1)
+                                    shutil.copyfile(json_path2, cf + '/' + json_path2)
+                                    shutil.copyfile(json_path3, cf + '/' + json_path3)
+                                    shutil.copyfile(json_path4, cf + '/' + json_path4)
+                                    shutil.copyfile(owl_path, oa + '/' + owl_path)
+                                    shutil.copyfile(statistic_name, results + '/' + statistic_name)
+                                    os.remove(json_path)
+                                    os.remove(json_path1)
+                                    os.remove(json_path2)
+                                    os.remove(json_path3)
+                                    os.remove(json_path4)
+                                    os.remove(owl_path)
+                                    os.remove(statistic_name)
+                                else:
+                                    os.remove(json_path)
+                if os.path.exists(str(Path(__file__).parent.parent) + '/results' + '/jsondocs'):
+                    new_file = unifer_creator.unifier(path_in)
+                    statistic_name = "statistics.txt"
+                    statistic = statistics_writer.write_statistic(new_file, precision,
+                                                              recall, f11, precision1, recall1,
+                                                              f111, statistic_name, counter)
+
+                    shutil.copyfile(new_file, results + '/' + new_file)
+                    shutil.copyfile(statistic, results + '/' + statistic)
+                    os.remove(statistic)
+                    os.remove(new_file)
             else:
                 print('This folder is empty')
         else:
