@@ -73,6 +73,7 @@ def f_measure(json_path, json_path3, json_path4, owl_path):
     f1 = (2 * precision * recall) / (precision + recall)
     print(owl_path)
     print()
+    print("Evaluation for ontology schema:")
     print("Precision: ", precision)
     print("Recall: ", recall)
     print("F1: ", f1)
@@ -111,6 +112,7 @@ def f_measure(json_path, json_path3, json_path4, owl_path):
         f11 = (2 * precision1 * recall1) / (precision1 + recall1)
     else:
         f11 = 0
+    print("Evaluation for named individuals:")
     print("Precision: ", precision1)
     print("Recall: ", recall1)
     print("F1: ", f11)
