@@ -40,20 +40,23 @@ def write_statistic(owl_path, precision, recall, f11, precision1,
             print("Number of datatype properties: ", count_datatype_prop)
             print("Number of named individuals: ", count_individual)
             print("Evaluation for ontology schema:")
-            print("Precision: ", precision/counter)
-            print("Recall: ", recall / counter)
-            print("F1: ", f11 / counter)
-            print()
-            print("Evaluation for named individuals:")
-            print("Precision: ", precision1 / counter)
-            print("Recall: ", recall1 / counter)
-            print("F1: ", f111 / counter)
-            print("------------------------------------------------")
-            f.write("Total Ontology:" + "\n" + "Evaluation for ontology schema:" + "\n" + "Precision: " + str(precision/counter)
-                    + "\n" + "Recall: " + str(recall / counter) + "\n" + "F1: " + str(f11 / counter) + "\n"
-                    + "Evaluation for named individuals:" + "\n" + "\n" + "Precision: " +
-                    str(precision1 / counter) + "\n" + "Recall: " + str(recall1 / counter) + "\n" + "F1: " +
-                    str(f111 / counter) + "\n")
+            if counter != 0:
+                print("Precision: ", precision/counter)
+                print("Recall: ", recall / counter)
+                print("F1: ", f11 / counter)
+                print()
+                print("Evaluation for named individuals:")
+                print("Precision: ", precision1 / counter)
+                print("Recall: ", recall1 / counter)
+                print("F1: ", f111 / counter)
+                print("------------------------------------------------")
+                f.write("Total Ontology:" + "\n" + "Evaluation for ontology schema:" + "\n" + "Precision: " + str(precision/counter)
+                        + "\n" + "Recall: " + str(recall / counter) + "\n" + "F1: " + str(f11 / counter) + "\n"
+                        + "Evaluation for named individuals:" + "\n" + "\n" + "Precision: " +
+                        str(precision1 / counter) + "\n" + "Recall: " + str(recall1 / counter) + "\n" + "F1: " +
+                        str(f111 / counter) + "\n")
+            else:
+                print("Counter = 0")
         else:
             print("Number of classes: ", count_class)
             print("Number of object properties: ", count_object_prop)
