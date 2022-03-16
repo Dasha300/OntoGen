@@ -174,6 +174,7 @@ def folder_owl(name):
     print('Start of the program at:', time1)
     cl = str(Path(__file__).parent.parent) + '/results'
     results = str(Path(__file__).parent.parent) + '/results' + '/evaluation'
+    js_cl = str(Path(__file__).parent.parent) + '/results' + '/jsondocs'
     for el in path:
         if os.path.exists(el):
             if os.listdir(el):
@@ -216,11 +217,10 @@ def folder_owl(name):
                                 try:
                                     open_json_file(json_path, rows)
                                     if rows:
-                                        cl = cl + '/jsondocs'
-                                        if not os.path.exists(cl):
-                                            os.mkdir(cl)
+                                        if not os.path.exists(js_cl):
+                                            os.mkdir(js_cl)
                                         json_path1 = json_path[0:len(json_path) - 5] + '1' + '.json'
-                                        cf = cl + '/' + json_path1[:-6]
+                                        cf = js_cl + '/' + json_path1[:-6]
                                         if not os.path.exists(cf):
                                             os.mkdir(cf)
                                         oa = str(Path(__file__).parent.parent) + '/results' + '/owl'
