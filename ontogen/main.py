@@ -187,8 +187,8 @@ def folder_owl(name):
                         else:
                             if not os.path.exists(cl):
                                 os.mkdir(cl)
-                                if not os.path.exists(results):
-                                    os.mkdir(results)
+                            if not os.path.exists(results):
+                                os.mkdir(results)
                             csv_path = el + '/' + awhile
                             if awhile[len(awhile) - 5:len(awhile)] != '.json':
                                 json_path = awhile[0:len(awhile) - 4] + '.json'
