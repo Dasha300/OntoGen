@@ -50,7 +50,7 @@ pip install -r requirements.txt
 ## Directory Structure
 
 * `datasets` contains datasets of source spreadsheets in the CSV format:
-    * `tough_tables` contains [Tough Tables (2T)](https://zenodo.org/record/4246370#.Yf5AO-pBw2w) dataset;
+    * `tough-tables` contains [Tough Tables (2T)](https://zenodo.org/record/4246370#.Yf5AO-pBw2w) dataset, where noise spreadsheets are excluded;
     * `wiki-uku-49` contains spreadsheets describing the main concepts and relationships in the field of education, in particular, universities in the United Kingdom (see [wiki-UKU-49: United Kingdom Universities from Wikipedia](https://data.mendeley.com/datasets/33v9tk6jjb/1));
     * `isi-167e` contains spreadsheets describing the main concepts and relationships in the field of Industrial Safety Inspection (see [ISI-167E: Entity spreadsheet tables](https://data.mendeley.com/datasets/3gjy46mx88/1)).
 * `examples` contains spreadsheet examples for testing.
