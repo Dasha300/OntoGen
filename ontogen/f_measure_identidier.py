@@ -48,7 +48,7 @@ def f_measure(json_path, json_path3, json_path4, owl_path):
             if line.find("<owl:Class") != -1:
                 correct_item = correct_item + 1
             for item in list_item:
-                if line.find('<rdfs:domain rdf:resource="#' + item) != -1:
+                if line.find('<rdfs:domain rdf:resource="#' + item.title().replace(" ", "")) != -1:
                     correct_item = correct_item + 1
     with open(owl_path, 'r', encoding='utf-8') as f:
         count_obj = 0
