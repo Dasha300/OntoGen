@@ -29,6 +29,7 @@ def f_measure(json_path, json_path3, json_path4, owl_path):
         class_item = 0
         datatype_prop_item = 0
         list_item = []
+        subj_item = ""
         for str_json in text:
             i = i + 1
             for obj_json in str_json:
@@ -38,6 +39,7 @@ def f_measure(json_path, json_path3, json_path4, owl_path):
                     list_item.append(obj_json.capitalize())
                 if text[i][obj_json] == "SUBJECT":
                     class_item = class_item + 1
+                    subj_item = obj_json
                     list_item.append(obj_json.capitalize())
                 if text[i][obj_json] == "LITERAL":
                     datatype_prop_item = datatype_prop_item + 1
@@ -48,7 +50,8 @@ def f_measure(json_path, json_path3, json_path4, owl_path):
             if line.find("<owl:Class") != -1:
                 correct_item = correct_item + 1
             for item in list_item:
-                if line.find('<rdfs:domain rdf:resource="#' + item.title().replace(" ", "")) != -1:
+                if line.find('<rdfs:domain rdf:resource="#' + item.title().replace(" ", "")) != -1 and \
+                        (item.title().replace(" ", "") == subj_item.title().replace(" ", "")):
                     correct_item = correct_item + 1
     with open(owl_path, 'r', encoding='utf-8') as f:
         count_obj = 0
@@ -71,6 +74,7 @@ def f_measure(json_path, json_path3, json_path4, owl_path):
     precision = correct_item / (object_prop_item + datatype_prop_item + class_item)
     recall = correct_item / potential_element
     f1 = (2 * precision * recall) / (precision + recall)
+
     print(owl_path)
     print()
     print("Evaluation for ontology schema:")
